@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新闻标题里的她 — 媒介素养测试</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-muted: #5a5048;
+    --ink-faint: #9a8f85;
+    --paper: #faf8f4;
+    --paper-warm: #f2ede5;
+    --paper-card: #ffffff;
+    --accent: #8b2635;
+    --accent-soft: #f5e8ea;
+    --accent-mid: #c4687a;
+    --gold: #b8860b;
+    --gold-soft: #fdf6e3;
+    --ok: #2d6a4f;
+    --ok-soft: #e8f5ee;
+    --border: rgba(26,20,16,0.12);
+    --border-strong: rgba(26,20,16,0.25);
+    --radius: 4px;
+    --radius-lg: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+
+  /* SCREENS */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ===== INTRO ===== */
+  #intro {
+    background: var(--paper);
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+  }
+  .intro-wrap { max-width: 680px; width: 100%; text-align: center; }
+  .intro-eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .intro-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(32px, 6vw, 54px);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .intro-title em { color: var(--accent); font-style: normal; }
+  .intro-divider {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    margin: 0 auto 32px;
+  }
+  .intro-desc {
+    font-size: 16px;
+    color: var(--ink-muted);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.9;
+  }
+  .intro-meta {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .intro-meta-item {
+    text-align: center;
+  }
+  .intro-meta-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+  .intro-meta-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+  .btn-start {
+    display: inline-block;
+    padding: 16px 48px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-start:hover { background: #6e1d28; transform: translateY(-1px); }
+  .btn-start:active { transform: translateY(0); }
+  .intro-note {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  /* ===== QUIZ ===== */
+  #quiz {
+    background: var(--paper);
+    padding: 0;
+    align-items: stretch;
+  }
+  .quiz-header {
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .quiz-header-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+  .quiz-progress-wrap { flex: 1; max-width: 300px; margin: 0 32px; }
+  .quiz-progress-bar-bg {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .quiz-progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .quiz-progress-text {
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: right;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .quiz-body {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 24px 80px;
+  }
+  .quiz-card {
+    max-width: 740px;
+    width: 100%;
+  }
+  .quiz-q-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+  }
+  .quiz-q-task {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .quiz-q-sub {
+    font-size: 14px;
+    color: var(--ink-faint);
+    margin-bottom: 24px;
+  }
+
+  /* News article card */
+  .news-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .news-card-source {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .news-card-source::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent-mid);
+    border-radius: 50%;
+  }
+  .news-card-body {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 12px;
+  }
+  
+  .news-card-body::-webkit-scrollbar { width: 6px; }
+  .news-card-body::-webkit-scrollbar-track { background: var(--paper); border-radius: 4px; }
+  .news-card-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+  /* Options */
+  .options-label {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .options-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    background: var(--paper-card);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    line-height: 1.6;
+    position: relative;
+  }
+  .option-btn:hover {
+    border-color: var(--ink-muted);
+    transform: translateY(-1px);
+  }
+  .option-btn.selected {
+    border-color: var(--ink);
+    background: var(--paper-warm);
+    font-weight: 600;
+  }
+  .option-letter {
+    display: inline-block;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 12px;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+
+  /* Navigation Buttons */
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+  .btn-nav {
+    padding: 12px 28px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+  }
+  .btn-prev {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--ink-muted);
+  }
+  .btn-prev:hover { background: var(--paper-card); color: var(--ink); }
+  .btn-prev.hidden { visibility: hidden; }
+  
+  .btn-next {
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    color: #fff;
+  }
+  .btn-next:hover:not(:disabled) { background: #333; }
+  .btn-next:disabled { background: var(--border-strong); border-color: transparent; cursor: not-allowed; opacity: 0.6; }
+
+  /* ===== RESULTS ===== */
+  #results {
+    background: var(--paper);
+    align-items: center;
+    justify-content: flex-start;
+    padding: 60px 24px 80px;
+  }
+  .results-wrap { max-width: 760px; width: 100%; margin: 0 auto; }
+  .results-eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .results-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink);
+    margin-bottom: 40px;
+    line-height: 1.4;
+  }
+
+  .score-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .score-ring-svg { width: 160px; height: 160px; }
+  .score-ring-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    fill: var(--ink);
+  }
+  .score-ring-label {
+    font-size: 11px;
+    fill: var(--ink-faint);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .literacy-bar-section {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .literacy-bar-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .literacy-bar-desc {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+    line-height: 1.8;
+  }
+  .literacy-spectrum {
+    position: relative;
+    height: 12px;
+    background: linear-gradient(to right, var(--ok), #f0c040, var(--accent));
+    border-radius: 6px;
+    margin: 0 auto 12px;
+    max-width: 480px;
+  }
+  .literacy-marker {
+    position: absolute;
+    top: -6px;
+    width: 24px; height: 24px;
+    background: var(--ink);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: left 1s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .literacy-scale-labels {
+    display: flex;
+    justify-content: space-between;
+    max-width: 480px;
+    margin: 0 auto;
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+  .literacy-level-text {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 20px;
+  }
+  .literacy-level-sub {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-top: 6px;
+    line-height: 1.8;
+  }
+
+  /* Answers review */
+  .review-section { margin-bottom: 32px; }
+  .review-section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .review-item {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  .review-item-num {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+  
+  .review-content-box {
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.7;
+      background: var(--paper);
+      padding: 14px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      max-height: 140px;
+      overflow-y: auto;
+  }
+
+  .review-headline-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .review-headline-box {
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .review-headline-box.orig {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    color: var(--ink-muted);
+  }
+  .review-headline-box.better {
+    background: var(--ok-soft);
+    border-left: 3px solid var(--ok);
+    color: var(--ink-muted);
+  }
+  .review-headline-box-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .review-headline-box.orig .review-headline-box-label { color: var(--accent); }
+  .review-headline-box.better .review-headline-box-label { color: var(--ok); }
+
+  .result-chosen-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .result-chosen {
+    font-size: 13px;
+    color: var(--ink-muted);
+    padding: 12px 14px;
+    background: var(--paper-warm);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    line-height: 1.7;
+    font-weight: 500;
+    border-left: 3px solid var(--ink);
+  }
+  .result-icon-orig::before { content: '⚠️ '; color: var(--accent); }
+  .result-icon-better::before { content: '✨ '; color: var(--ok); }
+  .result-icon-distract::before { content: '❌ '; color: var(--ink-faint); }
+
+  .review-why-box {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    margin-bottom: 10px;
+    padding: 14px 16px;
+    background: var(--gold-soft);
+    border-radius: var(--radius);
+  }
+  
+  .feedback-unesco {
+    font-size: 13px;
+    color: var(--ink-muted);
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+    line-height: 1.8;
+    font-style: italic;
+    margin-top: 12px;
+  }
+  .feedback-unesco strong { color: var(--ink); font-style: normal; }
+  
+  .review-source {
+    margin-top: 16px;
+  }
+  .review-source a {
+    font-size: 12px;
+    color: var(--gold);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .review-source a:hover { text-decoration: underline; }
+
+  /* Footer buttons */
+  .results-footer {
+    text-align: center;
+    padding-top: 8px;
+  }
+  .btn-restart {
+    display: inline-block;
+    padding: 14px 40px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-restart:hover { background: #6e1d28; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .anim-fade { animation: fadeUp 0.4s ease both; }
+  .anim-fade-2 { animation: fadeUp 0.4s 0.1s ease both; }
+  .anim-fade-3 { animation: fadeUp 0.4s 0.2s ease both; }
+
+  @media (max-width: 600px) {
+    .quiz-header { padding: 12px 16px; }
+    .quiz-header-title { font-size: 12px; }
+    .quiz-body { padding: 24px 16px 60px; }
+    .news-card { padding: 20px 18px; }
+    .review-headline-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div id="intro" class="screen active">
+  <div class="intro-wrap">
+    <div class="intro-eyebrow anim-fade">媒介素养测试 · Media Literacy Quiz</div>
+    <h1 class="intro-title anim-fade-2">新闻标题里的<em>她</em></h1>
+    <div class="intro-divider anim-fade-2"></div>
+    <p class="intro-desc anim-fade-3">
+      每一条新闻，都在用标题为女性定义形象。<br>
+      但你是否已经习惯了那些隐蔽的“毒标题”？<br>
+      <br>
+      在此测试中，你需要阅读真实的原始新闻长段落，<br>并凭直觉找出那个<strong>真正被发布在现实中</strong>的新闻标题。<br>
+      <span style="font-size: 13px; color: var(--accent);">注意：你越觉得某个标题“像真的”，可能意味着你受到的规训越深。</span>
+    </p>
+    <div class="intro-meta anim-fade-3">
+      <div class="intro-meta-item">
+        <span class="intro-meta-num">8</span>
+        <span class="intro-meta-label">真实案例</span>
+      </div>
+      <div class="intro-meta-item">
+        <span class="intro-meta-num">盲测</span>
+        <span class="intro-meta-label">随时修改选择</span>
+      </div>
+      <div class="intro-meta-item">
+        <span class="intro-meta-num">末尾</span>
+        <span class="intro-meta-label">显示深度解析</span>
+      </div>
+    </div>
+    <button class="btn-start" id="btnStart">接受挑战</button>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-header-title">新闻标题里的她</div>
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-bar-bg">
+        <div class="quiz-progress-bar" id="progressBar" style="width:0%"></div>
+      </div>
+      <div class="quiz-progress-text" id="progressText">0 / 8</div>
+    </div>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-card" id="quizCard">
+      <!-- Question content will be injected here -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div id="results" class="screen">
+  <div class="results-wrap">
+    <div class="results-eyebrow">盲测评测报告</div>
+    <h2 class="results-title" id="resultsTitle">测试完成</h2>
+
+    <div class="score-ring-wrap">
+      <svg class="score-ring-svg" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="66" fill="none" stroke="#e8e0d8" stroke-width="10"/>
+        <circle id="scoreRingCircle" cx="80" cy="80" r="66" fill="none" stroke="#8b2635" stroke-width="10"
+          stroke-linecap="round" stroke-dasharray="414.7" stroke-dashoffset="414.7"
+          transform="rotate(-90 80 80)" style="transition: stroke-dashoffset 1s ease;"/>
+        <text x="80" y="74" text-anchor="middle" dominant-baseline="middle" class="score-ring-num" id="scoreNum">0/8</text>
+        <text x="80" y="98" text-anchor="middle" class="score-ring-label" id="scoreRingLabel">命中真实（问题）标题</text>
+      </svg>
+    </div>
+
+    <div class="literacy-bar-section">
+      <div class="literacy-bar-title">媒介生态影响评估</div>
+      <div class="literacy-bar-desc" id="literacyDesc">正在计算……</div>
+      <div class="literacy-spectrum">
+        <div class="literacy-marker" id="literacyMarker" style="left: 0%"></div>
+      </div>
+      <div class="literacy-scale-labels">
+        <span>拒绝问题叙事 (素养高)</span>
+        <span>部分接受</span>
+        <span>深陷问题叙事</span>
+      </div>
+      <div class="literacy-level-text" id="literacyLevel">—</div>
+      <div class="literacy-level-sub" id="literacyLevelSub">—</div>
+    </div>
+
+    <div class="review-section">
+      <div class="review-section-title">全景案例解析与 UNESCO 准则对照</div>
+      <div id="reviewList"></div>
+    </div>
+
+    <div class="results-footer">
+      <button class="btn-restart" id="btnRestart">重新挑战</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // 原封不动还原真实文档素材内容，严格遵循避免“受害者做主语”的指导原则
+  var QUESTIONS = [
+    {
+      tag: "第 1 题 · 性别标注",
+      source: "福建清流县公安局悬赏通告",
+      content: "近日<br>三明市清流县公安局<br>发布悬赏通告<br>悬赏通缉10名在逃人员<br>其中<br>一名1996年出生的女子裴某洁<br>涉嫌开设赌场罪被通缉<br><br>清流县公安局悬赏通缉10名在逃人员<br>为进一步打击震慑各类违法犯罪，维护社会治安稳定，清流县公安局决定向社会公开悬赏通缉10名在逃犯罪嫌疑人（具体名单附后）。<br>...<br>犯罪在逃人员名单<br>1.郑宝财，男，身份证号码：452126197109292411，福建省福州市人，涉嫌故意伤害罪。<br>2.赖礼清，男，身份证号码：350423198911303516，清流县赖坊镇人，涉嫌偷越国（边）境罪。<br>3.冯廷胜，男，身份证号码：362129197503064238，江西省定南县人，涉嫌非法采矿罪。<br>4.蔡家鑫，男，身份证号码：350423199705041011，清流县嵩溪镇人，涉嫌偷越国（边）境罪。<br>5.张健平，男，身份证号码：350424199005190557，宁化县曹坊镇人，涉嫌掩饰、隐瞒犯罪所得、犯罪所得收益罪。<br>6.邹长春，男，身份证号码：350423198003265550，清流县长校镇人，涉嫌偷越国（边）境罪。<br>7.苏东舜，男，身份证号码：350524197812055534，福建省厦门市人，涉嫌开设赌场罪。<br>8.苏汉文，男，身份证号码：350524198711275532，福建省厦门市人，涉嫌开设赌场罪。<br>9.林根辉，男，身份证号码：350423196912113010，清流县沙芜乡人，涉嫌妨害公务罪。<br>10.裴梦洁，女，身份证号码：350423199602020023，清流县龙津镇人，涉嫌开设赌场罪。",
+      origTitle: "裴某洁（女，1996年出生），涉嫌开设赌场罪被通缉！",
+      betterTitle: "清流县公安局悬赏通缉10名在逃犯罪嫌疑人",
+      distractor: "10名在逃嫌疑人遭警方悬赏通缉，含1名女性",
+      why: "原标题刻意将10人名单中唯一的女性单拎出来作为流量奇观。这种做法违背新闻伦理，将女性的违法行为与其性别强行捆绑，剥夺了公众对整体公共安全信息了解的权利。",
+      unescoCite: "在报道中标注当事人性别，应仅在性别与事件存在直接关联时使用。若不适用于男性，同样不应适用于女性。标题不应刻意制造耸人听闻的性别噱头。",
+      source_url: "https://mp.weixin.qq.com/s/7DUC9smhuyY4oHNUK3NS7Q"
+    },
+    {
+      tag: "第 2 题 · 受害者框架",
+      source: "安徽未婚女子产后被男友起诉退彩礼",
+      content: "近日，“女子产后被男友起诉退还彩礼及分摊分娩费”引发网友关注。<br>据媒体报道，安徽女子李捷(化名)与男友陈明(化名)相亲相识后相恋，2025年2月李捷怀孕，二人举办婚礼但未办理结婚登记。临近生产时，两人因男方要求女方辞职前往上海、以及领证问题产生矛盾。2025年10月李捷剖宫产生下孩子，产后第五天，双方因孩子落户问题再次发生争执，产后仅半个月，陈明便向法院起诉，要求女方返还6.6万元彩礼、价值两万余元的三金，还要求平分分娩费、月嫂费、奶粉费等。<br>安徽省宿松县人民法院一审判决女方返还50%的彩礼，并承担一半奶粉费，驳回了男方要求分摊分娩费及月嫂费的诉求。在抚养问题上，法院基于未成年人利益最大化原则，结合女方因重度抑郁正在接受治疗、暂不具备稳定抚养条件等因素，判定孩子由男方直接抚养，女方按月支付抚养费。<br>河南泽槿律师事务所付建认为，《最高人民法院关于审理涉彩礼纠纷案件适用法律若干问题的规定》第六条规定...本案中女方患有严重抑郁，属于母亲患有严重疾病等不宜抚养情形，根据《婚姻家庭编解释(一)》第44条可男方抚养。",
+      origTitle: "安徽未婚女子产后被男友起诉退6.6万元彩礼、三金，还要求分摊分娩费、月嫂费、奶粉费等，律师：属婚约财产纠纷",
+      betterTitle: "男子起诉要求产后女友退还彩礼及分娩费，法院判决支持部分诉请",
+      distractor: "男方起诉追讨6.6万彩礼及月嫂费，法院依法驳回部分无理诉求",
+      why: "原标题以【未婚女子】作主语并作为道德暗示，用极长的标题罗列男方的金钱诉求制造奇观。这成功地将一个涉及女性身体权益和法律保障的严肃议题，降级为了让网友互撕的消费主义闹剧。",
+      unescoCite: "应让主张行为的一方成为句子的主语，避免将女性置于被动的客体地位。媒体应在避免耸人听闻的前提下描述现实，拒绝使用可能煽动道德判断的语言。",
+      source_url: "https://mp.weixin.qq.com/s/T4tZr93IzFu0GG_dwXRp0A"
+    },
+    {
+      tag: "第 3 题 · 情绪化叙事",
+      source: "女摩托车主深夜回家遭男子骚扰",
+      content: "4月24日，西安市公安局长安分局发布警情通报：<br>关于网传“女摩托车主遭遇他人滋扰”一事，我局已于当日受案调查。经查，马某某（男，40岁）、张某某（男，29岁）、孙某某（男，42岁）三人在辖区某路口等候红灯期间对摩托车驾驶员张某某（女，23岁）实施滋扰行为，造成恶劣影响。根据《中华人民共和国治安管理处罚法》相关规定，我局已依法对马某某、张某某、孙某某处以行政拘留。<br>陕西西安年轻女孩小鱼称，4月22日晚上11点多，她骑摩托车回家，等红灯时，一辆轿车多次停在她旁边。车里乘客一开始夸她车帅，后来又要乘坐她的车。小鱼连忙摆手拒绝。被拒绝后，车里的几个人直接下来围着她。2名男子直接要坐到她的后座上，女孩被吓得惊声尖叫。小鱼说，当时还有一名女子按住她不让走，让同伴上车。还有个男子趁机摸了她的腰。小鱼被吓得直接闯红灯，到了一个路口才把对方甩开，崩溃大哭，随后报警。",
+      origTitle: "女摩托车主深夜回家，在路口遭3男子骚扰，被对方趁机摸腰后崩溃大哭报警，西安警方：3人造成恶劣影响，处以行政拘留",
+      betterTitle: "西安3名男子路口滋扰女摩托车驾驶员，已被警方行拘",
+      distractor: "3名男子深夜围堵滋扰摩托车驾驶员，涉事人员已被行政拘留",
+      why: "原标题把【女摩托车主】放在主语位置，特别强调【深夜回家】和【崩溃大哭】，隐晦地通过环境描述进行道德暗示，并将事件转化为女性的情绪奇观，而隐去了对加害者违法行为的严肃审视。",
+      unescoCite: "应让攻击者成为句子和动词的主语。避免提出“晚上出门”类的环境暗示以免转嫁责任；避免渲染受害者的情绪表现以防奇观化。",
+      source_url: "https://mp.weixin.qq.com/s/KPxFexkCTWHWWeto19aZ-A"
+    },
+    {
+      tag: "第 4 题 · 性别化标签",
+      source: "温州违章司机逃逸事件",
+      content: "近日，在浙江温州闹市区<br>晚高峰时段<br>一辆26次违法未处理的车辆<br>进入温州交警的视线<br>交通管理局的交警队员立即前往路面查缉<br>接下来的一幕<br>让所有人目瞪口呆<br>这名女司机上演了一波暗黑操作<br>狂踩油门、穿梭BRT占道、<br>倒车逆行、实线变道、<br>直行道强势拐弯等……<br>女司机飙车技试图甩开交警<br>被交警队员截停之后<br>女司机最后竟拖着哭腔反问交警<br>“为什么抓我！”<br>之后，温州交警发布后续视频<br>飙完车技<br>被抓女司机又开始和交警“争逻辑”<br>展开了一段无厘头对话<br>女司机：为什么抓我啊！！！<br>交警：问题是，你跑什么跑啊？<br>女司机：我没钱处理违章，太多了，只能处理一部分……<br>交警：你这个问题想得很奇怪啊！你为什么平时不少违章一点？！<br>女司机：……不要坐牢啊！我害怕，吓死我了！<br>交警：我们也被你吓死了！你这样子出事故怎么办？",
+      origTitle: "违章26次还想逃？！女司机被拦截后大哭：我害怕，不要坐牢！",
+      betterTitle: "温州一车辆26次违章未处理，危险逃逸后被截停依法处理",
+      distractor: "违章26次危险逃逸者被截停，温州交警查扣涉事车辆",
+      why: "【女司机】在网络语境中长期与“驾驶能力差”挂钩，以此作为标签报道危险驾驶事件，不仅强化了系统性的性别偏见，还用戏谑的“大哭闹剧”抹盖了行政处罚的严肃性。",
+      unescoCite: "媒体不应将‘女性’作为带有贬义色彩的流量标签凸显，这属于典型的性别刻板印象（Stereotyping）。",
+      source_url: "https://mp.weixin.qq.com/s/h-PAKgeGrTgoQKW7bQUR1Q"
+    },
+    {
+      tag: "第 5 题 · 奇观化苦难",
+      source: "深圳酒吧15岁少女致死案",
+      content: "当你走进酒吧点了一杯特调饮品<br>你永远不知道<br>这杯饮料里除了酒精和果汁<br>还可能掺着什么<br>通过中国裁判文书网查询，据去年底公布的一份判决书显示，深圳曾发生一起因误饮“滴滴原液”致人死亡的悲剧，年仅15岁的少女刘某甲，在酒吧过量摄入含该成分的饮品后，因γ-羟基丁酸中毒身亡。<br>2023年10月25日凌晨，案外人王某某、梁某某相约到龙岗区饮酒，由该酒吧营销人员郑某某负责订台，二人在SV55卡座就坐后，梁某某使用随身携带的约40ml“滴滴”原液（即1,4-丁二醇）加入绿茶后勾兑成“滴滴水”与王某某等人一起饮用。<br>期间，郑某某为留住客户及多购买酒水，叫来酒吧“维护女”即被害人刘某甲到SV55卡座与王某某、梁某某等人一起喝酒。<br>二人的“滴滴水”饮用完毕后，王某某要求郑某某拿空扎壶到SV61卡座找被告罗某添加“滴滴”原液...凌晨4时30分许，被害人刘某甲离开SV55号台。<br>2023年10月25日7时许，被害人刘某甲因过量饮用“滴滴水”身体出现异常，经120抢救无效死亡。经鉴定，死者符合因γ-羟基丁酸中毒死亡。<br>案发后，罗某、王某某、梁某某、郑某某均被以过失致人死亡罪判刑...<br>所谓的“滴滴原液”<br>不是普通饮品添加剂<br>而是可以致人死亡的毒品前体<br>无论是饮酒参与者<br>还是提供者<br>一旦触碰<br>不仅可能背负刑事责任<br>还将面临民事赔偿",
+      origTitle: "15岁少女凌晨遭下毒品，抢救无效身亡！4人获刑",
+      betterTitle: "深圳酒吧投毒致人死亡案：4人因过失致人死亡罪获刑",
+      distractor: "1,4-丁二醇混入酒水致15岁女孩死亡，4名涉案人员获刑",
+      why: "原标题以受害的【少女】作主语并辅以【凌晨】制造刺激感，隐蔽地进行了一场道德审判（暗示为什么少女凌晨在酒吧），将防范责任推给受害者，弱化了施暴者蓄意犯罪的事实。",
+      unescoCite: "在报道致命暴力事件时，应警惕“受害者有罪论”的传播框架。让加害者成为句子的主语，不应以耸人听闻的方式消费苦难。",
+      source_url: "https://mp.weixin.qq.com/s/EaEsOZJJAcjJZZ0Tm64KFQ"
+    },
+    {
+      tag: "第 6 题 · 暴力奇观化",
+      source: "山西女硕士遭同村人强奸案",
+      content: "#同村村民猥亵患病女硕士的女儿# 山西一名女硕士卜某患精神疾病走失十余年，被找回后竟发现其已与一名男子育有一双儿女，此事曾引起社会的广泛关注，涉事男子张某军在事发后被刑事拘留。<br>1月22日晚，@扬子晚报 记者从被找回女硕士的哥哥卜先生处获悉，去年12月，他们收到检察院对张某军的不起诉决定书。决定书显示，张某军和卜某长期稳定同居并育有子女，不构成强奸罪。张某军还曾将卜某生育的一婴儿送养，获取4万元抱养费，检方认为生活困难的张某军属民间送养，不构成犯罪。<br>此外，卜先生告诉@扬子晚报 记者，张某军的两名同村村民因涉嫌多次强奸卜某被检方公诉，案件于去年年底开庭，目前尚未宣判。<br>#失踪13年生育孩子女硕士精神好转# 据卜先生提供的起诉书载明，2022年至2024年间，被告人张某林先后三次到张某军家，在明知被害人卜某精神异常不能正确表达自己意愿的情况下与其发生性关系。记者从起诉书中看到，张某林三次欲与卜某发生性关系时，卜某均独自一人在床上看电视。记者注意到，其中有一次张某林在与卜某发生性关系时，被张某军从隔壁房中出来看到并斥责后离开。另有一次张某林在与卜某发生性关系时，被在外玩耍回到家中的张某军儿子及其同学看到后离开。三次案件材料均显示，2024年12月，经山西省精神疾病司法鉴定中心鉴定，卜某患精神分裂症且无性自我防卫能力。",
+      origTitle: "#女硕士被村民强奸时被儿子目击#",
+      betterTitle: "山西两名男子涉嫌多次性侵患病走失女性，已被检察院提起公诉",
+      distractor: "两名村民涉嫌多次性侵精神障碍女性，案件已由检方提起公诉",
+      why: "原标题不但以受害者作主语，还以【被儿子目击】作为标题核心，将强奸犯罪的细节极度奇观化。这一细节除了消费受害者及其子女的严重创伤外，不具备任何公共新闻价值。",
+      unescoCite: "不要把受害者作为句子的主体。报道性暴力时，绝不应使用可能再次伤害受害者或其家人的细节，应将暴力行为和司法进展置于核心。",
+      source_url: "https://weibo.com/1653603955/5258199854745568"
+    },
+    {
+      tag: "第 7 题 · 外貌标签化",
+      source: "00后武警女兵刘江涛报道",
+      content: "你见过<br>162cm、体重不过百的姑娘扛起十几公斤的12.7大狙吗？<br>还能负重26公斤装备奔袭200米山路<br>剧烈喘息中迅速锁定目标<br>700米外精准命中靶心！<br>这位00后女兵<br>长相清秀甜美<br>笑起来眉眼弯弯满是少女元气<br>被战友们亲切地叫做“狙击甜妹”<br>今天<br>我们一起走进“狙击甜妹” 刘江涛的故事<br>“12.7是什么？”<br>12.7指12.7毫米口径这里指12.7毫米反器材狙击步枪（俗称“12.7大狙”）可打击装甲车、直升机、工事等高价值目标是单兵装备里的“大杀器”<br>为了驾驭12.7毫米大口径狙击枪她付出了远超男队员的汗水负重奔袭200米山路全身装具加枪械重达26公斤每一步都要对抗沉重的装备与体力的透支...<br>“我要当能扛大狙的女狙击手”<br>2000年后出生的刘江涛是武警四川总队某机动支队的一名战士甜妹外表与硬核实力的极致反差让这位00后女兵圈粉无数<br>从刚踏入狙击专业的那一刻<br>质疑声从未停止...<br>“脱下军装是甜妹，穿上军装是战士”<br>脱下迷彩军装<br>她也是爱说爱笑、怀揣少女心事的00后<br>喜欢追剧、喜欢美食<br>可一旦披上戎装、扛起钢枪<br>她瞬间褪去青涩<br>化身令敌人胆寒的巾帼狙击手<br>在她看来<br>军营从不是男性的专属舞台<br>女性也从来不是军营的配角",
+      origTitle: "极致反差！“狙击甜妹”火了",
+      betterTitle: "武警00后女狙击手打破女子组纪录，700米外精准命中靶心",
+      distractor: "女兵刘江涛驾驭12.7大口径狙击枪，用实力打破专业性别偏见",
+      why: "【极致反差】和【甜妹】将女性军人的外貌作为新闻首要噱头，暗示甜美女孩会打枪才是新闻价值所在，而非她的专业能力本身。这种叙事恰恰加剧了对女性军人的刻板印象。",
+      unescoCite: "对女性专业人员的报道应聚焦其专业成就，不应以外貌特征（甜美、美丽）作为描述前提或核心标签，男性同行在相似报道中不会受到同等待遇。",
+      source_url: "https://mp.weixin.qq.com/s/A8YXjcSGTqYRsuetFuOmKw"
+    },
+    {
+      tag: "第 8 题 · 他者视角审视",
+      source: "数学家王虹北大连续讲座",
+      content: "6月19日34岁的年轻教授王虹继续在北京大学开数学讲座现场依旧座无虚席北大数院研究员韦东奕再次现身教室第一排认真听讲这是他连续三天参加该讲座<br>19日上午<br>北大数院硕士研究生小陈同学<br>告诉记者<br>她当天也参加了王虹老师的讲座<br>现场有许多外国同学来旁听<br>在小陈同学拍摄的视频当中<br>韦东奕在课间和数学爱好者们<br>一同围在王虹周围，交流数学问题<br>据科技日报报道，5月22日，法国高等科学研究所宣布，聘请中国数学家王虹自今年9月开始担任该校数学学科终身教授。与此同时，王虹将兼任纽约大学柯朗数学科学研究所数学教授。<br>王虹来自广西桂林平乐县，2011年获得北京大学数学学士学位...<br>作为调和分析领域的专家，王虹于2022被授予“玛丽安·米尔札哈尼新前沿奖”...<br>今年3月，王虹在纽约大学柯朗数学研究所的一堂课引起了关注。<br>教室里座无虚席...<br>有网友把这些画面做成了表情包：台下的人听着听着就懵了……<br>这堂课为什么能有这么大的魅力？原来，王虹在此次研讨会上公开分享了她在三维挂谷猜想上的研究成果。...<br>科技日报报道提到，很多学者认为，王虹是目前最有机会获得菲尔兹奖的青年女数学家之一。",
+      origTitle: "韦东奕连听3天讲座，这位女教授该有多厉害？",
+      betterTitle: "数学家王虹北大连开三日讲座，破解三维挂谷猜想引广泛关注",
+      distractor: "数学家王虹北大讲座连续三日座无虚席，韦东奕现身第一排",
+      why: "标题以男性名人（韦东奕）作为主语和评判标尺，将女性科学家的成就依附于男性的认可。“该有多厉害”的惊叹语气也暗含了“女性数学家通常不厉害”的系统性预设偏见。",
+      unescoCite: "报道女性专业人士时，应以其本人成就为核心，而非通过他人（尤其是男性）的反应来佐证其价值。避免使女性的成就依赖外部（男性）的认证。",
+      source_url: "https://mp.weixin.qq.com/s/s_ufnhjBLWtxue8uuLlvkQ"
+    }
+  ];
+
+  var currentQ = 0;
+  var userSelections = new Array(QUESTIONS.length).fill(null);
+  var shuffledQuestionsOpts = new Array(QUESTIONS.length).fill(null);
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+  }
+
+  function startQuiz() {
+    currentQ = 0;
+    userSelections = new Array(QUESTIONS.length).fill(null);
+    shuffledQuestionsOpts = new Array(QUESTIONS.length).fill(null);
+    showScreen('quiz');
+    renderQuestion();
+  }
+
+  function shuffleOptions(q) {
+    var opts = [
+      { text: q.origTitle, type: 'orig' },
+      { text: q.betterTitle, type: 'better' },
+      { text: q.distractor, type: 'distractor' }
+    ];
+    for (var i = opts.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
+    }
+    return opts;
+  }
+
+  function renderQuestion() {
+    var q = QUESTIONS[currentQ];
+    var pct = (currentQ / QUESTIONS.length) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = (currentQ + 1) + ' / ' + QUESTIONS.length;
+
+    if (!shuffledQuestionsOpts[currentQ]) {
+      shuffledQuestionsOpts[currentQ] = shuffleOptions(q);
+    }
+    var currentOpts = shuffledQuestionsOpts[currentQ];
+    var savedSelection = userSelections[currentQ];
+
+    var letters = ['A', 'B', 'C'];
+    var optionsHtml = currentOpts.map(function(opt, i) {
+      var isSelected = (savedSelection && savedSelection.text === opt.text) ? ' selected' : '';
+      return '<button class="option-btn' + isSelected + '" data-idx="' + i + '" id="opt_' + i + '">'
+        + '<span class="option-letter">' + letters[i] + '</span>' + opt.text + '</button>';
+    }).join('');
+
+    var isLast = currentQ >= QUESTIONS.length - 1;
+    var btnPrevHtml = '<button class="btn-nav btn-prev ' + (currentQ === 0 ? 'hidden' : '') + '" id="btnPrev">← 上一题</button>';
+    var btnNextState = savedSelection ? '' : 'disabled';
+    var btnNextText = isLast ? '提交并查看报告' : '下一题 →';
+    var btnNextHtml = '<button class="btn-nav btn-next" id="btnNext" ' + btnNextState + '>' + btnNextText + '</button>';
+
+    document.getElementById('quizCard').innerHTML =
+      '<div class="anim-fade">'
+      + '<div class="quiz-q-label">' + q.tag + '</div>'
+      + '<div class="quiz-q-task">请凭直觉选出，以下哪个是真实发布在媒体上的新闻标题？</div>'
+      + '<div class="quiz-q-sub">（注意：寻找那个现实中“真正存在”的标题）</div>'
+      + '<div class="news-card">'
+      + '<div class="news-card-source">原始事件长文本素材</div>'
+      + '<div class="news-card-body">' + q.content + '</div>'
+      + '</div>'
+      + '<div class="options-list">' + optionsHtml + '</div>'
+      + '<div class="quiz-nav">' + btnPrevHtml + btnNextHtml + '</div>'
+      + '</div>';
+  }
+
+  function selectOption(idx) {
+    var chosenOpt = shuffledQuestionsOpts[currentQ][idx];
+    userSelections[currentQ] = chosenOpt;
+
+    var buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(function(btn) { btn.classList.remove('selected'); });
+    document.getElementById('opt_' + idx).classList.add('selected');
+
+    document.getElementById('btnNext').removeAttribute('disabled');
+
+    setTimeout(function() {
+      if (userSelections[currentQ] && userSelections[currentQ].text === chosenOpt.text) {
+          goNext();
+      }
+    }, 400);
+  }
+
+  function goNext() {
+    if (!userSelections[currentQ]) return;
+    if (currentQ >= QUESTIONS.length - 1) {
+      showResults();
+    } else {
+      currentQ++;
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function goPrev() {
+    if (currentQ > 0) {
+      currentQ--;
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function showResults() {
+    showScreen('results');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    var realCount = userSelections.filter(function(a) { return a && a.type === 'orig'; }).length;
+    var total = QUESTIONS.length;
+    var pct = realCount / total;
+
+    var circum = 414.7;
+    document.getElementById('scoreNum').textContent = realCount + '/' + total;
+    setTimeout(function() {
+      document.getElementById('scoreRingCircle').style.strokeDashoffset = circum * (1 - pct);
+    }, 300);
+
+    var markerLeft = Math.round(pct * 100);
+    setTimeout(function() {
+      document.getElementById('literacyMarker').style.left = markerLeft + '%';
+    }, 600);
+
+    var level, sub, desc;
+    if (realCount >= 6) {
+      level = "深度内化问题叙事";
+      desc = "你准确识别出了 " + realCount + " / " + total + " 个真实的标题。这说明你对当前的恶劣媒介生态极为熟悉。";
+      sub = "潜意识里，你可能已经接受了‘新闻标题本来就该这么写’。高命中率恰恰证明了问题叙事对你的规训有多深。";
+    } else if (realCount >= 4) {
+      level = "习惯性接受问题叙事";
+      desc = "你认出了 " + realCount + " / " + total + " 个真实的标题。这些充满偏见的套路对你来说并不陌生。";
+      sub = "这很正常，我们都在被这样的信息环境包围。意识到恶劣框架的存在，是夺回认知主权的第一步。";
+    } else if (realCount >= 2) {
+      level = "具备一定的媒介免疫力";
+      desc = "你只猜中了 " + realCount + " / " + total + " 个真实的标题。面对偏见叙事，你保留了一定的审视距离。";
+      sub = "你没有完全被标题党俘获，往往能察觉到叙事中的不合理之处，继续保持你的批判性思考。";
+    } else {
+      level = "媒介素养极高";
+      desc = "你几乎避开了所有真实的毒标题！在你眼中，客观、公正、尊重人权的叙事才是理所应当的。";
+      sub = "你完全没有受到污浊媒介环境的规训，你所选择的答案，恰恰是这个世界本该有的正确模样。";
+    }
+
+    document.getElementById('resultsTitle').textContent =
+      realCount <= 3 ? "你拥有一双清澈的眼睛" : "你在多大程度上向现实妥协了？";
+    document.getElementById('literacyLevel').textContent = level;
+    document.getElementById('literacyLevelSub').textContent = sub;
+    document.getElementById('literacyDesc').textContent = desc;
+
+    var reviewHtml = QUESTIONS.map(function(q, i) {
+      var a = userSelections[i];
+      if (!a) return ''; 
+      
+      var isBetter = a.type === 'better';
+      var isReal = a.type === 'orig';
+
+      var statusColor = isBetter ? 'var(--ok)' : (isReal ? 'var(--accent)' : 'var(--ink-faint)');
+      var statusText = isBetter ? '✨ 选中最优改良标题' : (isReal ? '⚠️ 选中现实问题标题' : '❌ 选中干扰项');
+      var chosenClass = isBetter ? 'result-icon-better' : (isReal ? 'result-icon-orig' : 'result-icon-distract');
+
+      var chosenHtml = '<div class="result-chosen-label">你当时的选择：</div><div class="result-chosen ' + chosenClass + '">' + a.text + '</div>';
+
+      return '<div class="review-item">'
+        + '<div class="review-item-num">题目 ' + (i+1) + ' · ' + q.source
+        + ' <span style="margin-left:8px;font-weight:700;color:' + statusColor + '">' + statusText + '</span></div>'
+        + '<div class="review-content-box">' + q.content + '</div>'
+        + chosenHtml
+        + '<div class="review-headline-row">'
+        + '<div class="review-headline-box orig"><div class="review-headline-box-label">⚠️ 现实原始问题标题</div>' + q.origTitle + '</div>'
+        + '<div class="review-headline-box better"><div class="review-headline-box-label">✨ 更符合新闻伦理的标题</div>' + q.betterTitle + '</div>'
+        + '</div>'
+        + '<div class="review-why-box"><strong style="color:var(--ink)">媒介滤镜剖析：</strong>' + q.why + '</div>'
+        + '<div class="feedback-unesco"><strong>UNESCO准则：</strong>' + q.unescoCite + '</div>'
+        + '<div class="review-source">原文来源：<a href="' + q.source_url + '" target="_blank">' + q.source_url + '</a></div>'
+        + '</div>';
+    }).join('');
+    document.getElementById('reviewList').innerHTML = reviewHtml;
+  }
+
+  // 绑定事件
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('btnStart').addEventListener('click', startQuiz);
+    document.getElementById('btnRestart').addEventListener('click', startQuiz);
+    
+    document.getElementById('quiz').addEventListener('click', function(e) {
+      var optBtn = e.target.closest('.option-btn');
+      if (optBtn) {
+        var idx = parseInt(optBtn.getAttribute('data-idx'), 10);
+        if (!isNaN(idx)) selectOption(idx);
+        return;
+      }
+      var nextBtn = e.target.closest('#btnNext');
+      if (nextBtn && !nextBtn.disabled) goNext();
+      
+      var prevBtn = e.target.closest('#btnPrev');
+      if (prevBtn) goPrev();
+    });
+  });
+})();
+</script>
+</body>
+</html>
